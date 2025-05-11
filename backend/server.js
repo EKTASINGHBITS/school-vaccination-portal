@@ -67,6 +67,16 @@ app.delete('/students/:id', async (req, res) => {
     res.status(500).send({ error: err.message });
   }
 });
+// GET: Find student by custom studentId (not Mongo _id)
+app.get('/students/by-id/:studentId', async (req, res) => {
+  try {
+    const student = await Student.findOne({ studentId: req.params.studentId });
+    if (!student) return res.status(404).send({ message: 'Student not found' });
+    res.status(200).send(student);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
 
 // ===== Drive Routes =====
 const Drive = require('./models/Drive');
@@ -107,6 +117,16 @@ app.delete('/drives/:id', async (req, res) => {
     res.status(500).send({ error: err.message });
   }
 });
+app.get('/drives/:id', async (req, res) => {
+  try {
+    const drive = await Drive.findById(req.params.id);
+    if (!drive) return res.status(404).send({ message: 'Drive not found' });
+    res.send(drive);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
 
 // ===== DB Connect and Server Boot =====
 mongoose.connect(process.env.MONGO_URI)
